@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Favorite Animals</title>
+  <style type="text/css">
+    button,
+    div,
+    form,
+    input {
+      margin: 10px;
+
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Animal Buttons</h1>
+     <!-- Rendered Buttons will get Dumped Here  -->
+    <div id="buttons-view"></div>
+    <form id="animal-form">
+      <label for="animal-input"> Insert animal here  >>></label>
+      <input type="text" id="animal-input"><br>
+      <!-- Button triggers new movie to be added -->
+      <input id="add-animal" type="submit" value="Add">
+    </form>
+    <div id="pics"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      // Initial array of animal
+      var animals = ["Cat", "Pig", "Frog", "Pigeon"];
+      // Generic function for capturing the animal name from the data-attribute
+        renderButtons();
+
+
+
+      // Function for displaying movie data
+      function renderButtons() {
+        // Deleting the movies prior to adding new movies
+        // (this is necessary otherwise we will have repeat buttons)
+        $("#buttons-view").empty();
+        // Looping through the array of movies
+        for (var i = 0; i < animals.length; i++) {
+          // Then dynamicaly generating buttons for each movie in the array
+          // This code $("<button>") is all jQuery needs to create the start and end tag. (<button></button>)
+          var a = $("<button>");
+          // Adding a class of movie to our button
+          a.addClass("animal");
+          // Adding a data-attribute
+          a.attr("data-name", animals[i]);
+
+          // Providing the initial button text
+          a.text(animals[i]);
+          // Adding the button to the HTML
+          $("#buttons-view").append(a);
+        }
+      }
+      // This function handles events where one button is clicked
+      $("#add-animal").on("click", function(event) {
+        // Preventing the buttons default behavior when clicked (which is submitting a form)
+        event.preventDefault();
+        // This line grabs the input from the textbox
+        var animal = $("#animal-input").val().trim();
+        // Adding the movie from the textbox to our array
+        animals.push(animal);
+        // Calling renderButtons which handles the processing of our array
+
+        renderButtons();
+       // $('form :input').val('');
+       $("form")[0].reset();
+
+        $("button").on("click", function() {
+      var name = $(this).attr("data-name");
+
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        name + "&api_key=dc6zaTOxFJmzC&limit=10";
+      $.ajax({
+          url: queryURL,
+          method: "GET"
+        })
+        .done(function(response) {
+          var results = response.data;
+
+
+
+           $("#pics").empty()
+          for (var i = 0; i < results.length; i++) {
+            var gifDiv = $("<img>");
+
+            gifDiv.attr("data-state", "still");
+            gifDiv.attr("animate", results[i].images.fixed_height.url )
+            gifDiv.attr("stop",results[i].images.fixed_height_still.url )
+            gifDiv.attr("src", results[i].images.fixed_height_still.url)
+           
+           
+            
+            
+            
+
+            $("#pics").prepend(gifDiv);
+       
+             
+
+   
+ 
+          }
+          $("img").on("click", function() {
+      // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+  
+
+      var state = $(this).attr('data-state');
+
+        if (state == "still"){
+
+        $(this).attr('src', $(this).attr("animate"));
+        $(this).attr('data-state', "1");
+
+       }else{
+         $(this).attr('src', $(this).attr("stop"));
+         $(this).attr('data-state', "still");
+       }
+
+});
+        });
+
+    });
+
+              });
+
+
+
+
+
+      // Function for displaying the movie info
+      // We're adding a click event listener to all elements with the class "movie"
+      // We're adding the event listener to the document because it will work for dynamically generated elements
+      // $(".movies").on("click") will only add listeners to elements that are on the page at that time
+      
+      // Calling the renderButtons function to display the intial buttons
+
+
+ $("button").on("click", function() {
+      var name = $(this).attr("data-name");
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        name + "&api_key=dc6zaTOxFJmzC&limit=10";
+
+      $.ajax({
+          url: queryURL,
+          method: "GET"
+        })
+        .done(function(response) {
+          var results = response.data;
+
+
+
+           $("#pics").empty()
+          for (var i = 0; i < results.length; i++) {
+            var gifDiv = $("<img>");
+
+            gifDiv.attr("data-state", "still");
+            gifDiv.attr("animate", results[i].images.fixed_height.url )
+            gifDiv.attr("stop",results[i].images.fixed_height_still.url )
+            gifDiv.attr("src", results[i].images.fixed_height_still.url)
+           
+           
+            
+            
+            
+
+            $("#pics").prepend(gifDiv);
+       
+
+            }
+            $("img").on("click", function() {
+      // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+  
+
+      var state = $(this).attr('data-state');
+
+        if (state == "still"){
+
+        $(this).attr('src', $(this).attr("animate"));
+        $(this).attr('data-state', "1");
+
+       }else{
+         $(this).attr('src', $(this).attr("stop"));
+         $(this).attr('data-state', "still");
+       }
+
+
+   // $(this).attr("src", $(this).attr("amimate"));
+                 
+
+        
+
+       
+        
+     
+
+//       console.log("state");
+   
+//     // var ex = $(this).attr("data-state");
+//     // console.log(ex);
+
+});
+
+      });
+    });
+
+
+// $(".giphy").on("click", function() {
+//       // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+//       console.log("yolo");
+     
+
+// //       console.log("state");
+   
+// //     // var ex = $(this).attr("data-state");
+// //     // console.log(ex);
+
+// });
+
+
+
+
+
+    </script>
+  </div>
+</body>
+</html>
